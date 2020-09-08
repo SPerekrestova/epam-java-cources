@@ -11,6 +11,6 @@ public class Task032Impl implements Task032 {
         if (proxy == null) {
             throw new IllegalArgumentException();
         }
-        return new SomeActionExecutorImpl(proxy);
+        return ((CountingProxyImpl) proxy).setExecutor(new SomeActionExecutorImpl());
     }
 }
