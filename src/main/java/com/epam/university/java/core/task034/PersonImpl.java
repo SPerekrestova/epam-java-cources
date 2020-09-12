@@ -1,11 +1,11 @@
 package com.epam.university.java.core.task034;
 
-import java.util.Collections;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
@@ -13,18 +13,18 @@ import java.util.Collection;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class PersonImpl implements Person {
 
-    @XmlAttribute(name="id")
+    @XmlAttribute(name = "id")
     private int id;
 
-    @XmlElement(name="first-name")
+    @XmlElement(name = "first-name")
     private String firstName;
 
-    @XmlElement(name="last-name")
+    @XmlElement(name = "last-name")
     private String lastName;
 
-    //@XmlElementWrapper(name="person-phones")
-    @XmlElement(name="person-phone")
-    private Collection<PhoneNumberImpl> phoneNumbers;
+    @XmlElementWrapper(name = "person-phones")
+    @XmlElements({@XmlElement(type = PhoneNumberImpl.class, name = "person-phone")})
+    private Collection<PhoneNumber> phoneNumbers;
 
     @Override
     public int getId() {
@@ -58,11 +58,11 @@ public class PersonImpl implements Person {
 
     @Override
     public Collection<PhoneNumber> getPhoneNumbers() {
-        return Collections.singleton((PhoneNumberImpl) phoneNumbers);
+        return phoneNumbers;
     }
 
     @Override
     public void setPhoneNumbers(Collection<PhoneNumber> phoneNumbers) {
-        this.phoneNumbers = Collections.singleton((PhoneNumberImpl) phoneNumbers);
+        this.phoneNumbers = phoneNumbers;
     }
 }
