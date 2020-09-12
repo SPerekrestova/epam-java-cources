@@ -1,19 +1,17 @@
 package com.epam.university.java.core.task034;
 
-import java.io.Serializable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-public class PhoneNumberImpl implements PhoneNumber, Serializable {
-    private static final long serialVersionUID = 1L;
+
+@XmlRootElement(name = "person-phones")
+@XmlAccessorType(XmlAccessType.FIELD)
+public class PhoneNumberImpl implements PhoneNumber {
+
+    @XmlElement(name="person-phone")
     private String phoneNumber;
-
-    public PhoneNumberImpl() {
-        super();
-    }
-
-    public PhoneNumberImpl(String phoneNumber) {
-        super();
-        this.phoneNumber = phoneNumber;
-    }
 
     @Override
     public String getPhoneNumber() {

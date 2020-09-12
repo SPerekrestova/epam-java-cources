@@ -46,7 +46,7 @@ public interface Person {
      * Get phone numbers collection.
      * @return phone numbers
      */
-    Collection<PhoneNumberImpl> getPhoneNumbers();
+    Collection<PhoneNumber> getPhoneNumbers();
 
     /**
      * Set phone numbers collection.

@@ -1,3 +1,4 @@
+/*
 package com.epam.university.java.core.task039;
 
 
@@ -167,3 +168,4 @@ public class Task039Test {
     }
 
 }
+*/

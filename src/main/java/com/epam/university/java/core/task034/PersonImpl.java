@@ -1,31 +1,30 @@
 package com.epam.university.java.core.task034;
 
+import java.util.Collections;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
 import java.util.Collection;
 
 @XmlRootElement(name = "person")
-@XmlAccessorType(XmlAccessType.PROPERTY)
-public class PersonImpl implements Person, Serializable {
-    private static final long serialVersionUID = 1L;
+@XmlAccessorType(XmlAccessType.FIELD)
+public class PersonImpl implements Person {
+
+    @XmlAttribute(name="id")
     private int id;
+
+    @XmlElement(name="first-name")
     private String firstName;
+
+    @XmlElement(name="last-name")
     private String lastName;
+
+    //@XmlElementWrapper(name="person-phones")
+    @XmlElement(name="person-phone")
     private Collection<PhoneNumberImpl> phoneNumbers;
-
-    public PersonImpl() {
-        super();
-    }
-
-    public PersonImpl(int id, String firstName, String lastName, Collection<PhoneNumberImpl> phoneNumbers) {
-        super();
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumbers = phoneNumbers;
-    }
 
     @Override
     public int getId() {
@@ -58,12 +57,12 @@ public class PersonImpl implements Person, Serializable {
     }
 
     @Override
-    public Collection<PhoneNumberImpl> getPhoneNumbers() {
-        return phoneNumbers;
+    public Collection<PhoneNumber> getPhoneNumbers() {
+        return Collections.singleton((PhoneNumberImpl) phoneNumbers);
     }
 
     @Override
     public void setPhoneNumbers(Collection<PhoneNumber> phoneNumbers) {
-        this.phoneNumbers = ((Collection<PhoneNumberImpl>) phoneNumbers);
+        this.phoneNumbers = Collections.singleton((PhoneNumberImpl) phoneNumbers);
     }
 }
