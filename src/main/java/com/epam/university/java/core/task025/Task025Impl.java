@@ -11,9 +11,7 @@ public class Task025Impl implements Task025 {
             return 0;
         }
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < sourceMessage.length() / 3; i++) {
-            buf.append("SOS");
-        }
+        buf.append("SOS".repeat(sourceMessage.length() / 3 + 1));
 
         int count = 0;
 
