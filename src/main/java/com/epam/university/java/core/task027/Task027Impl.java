@@ -18,38 +18,55 @@ public class Task027Impl implements Task027 {
         for (int i = 0; i < sourceString.length(); i++) {
             list.add(Character.digit(sourceString.charAt(i), 10));
         }
-        if (list.get(1) - list.get(0) == 1) {
+        if (hasValidStructure(list)) {
             return list;
         }
         list.clear();
 
+        if (sourceString.length() % 2 == 0) {
+            for (int i = 0; i < sourceString.length(); i += 2) {
+                list.add(Integer.valueOf(sourceString.substring(i, i + 2)));
+            }
+            if (hasValidStructure(list)) {
+                return list;
+            }
+            list.clear();
+        }
+
         if (!sourceString.contains("0")) {
             return Collections.emptyList();
         }
-        int zero = sourceString.indexOf("0");
-        int pos = zero - 1;
-        int buf = zero;
-        while (sourceString.charAt(buf) != '0') {
-            buf++;
-        }
-        String str;
-        if (pos != 0) {
-            str = sourceString.substring(0, pos);
-            list.add(Integer.parseInt(str));
-        } else {
-            buf++;
-        }
 
-        for (int i = pos; i < sourceString.length(); i += buf) {
-            str = sourceString.substring(i, i + buf);
-            if (list.size() == 0) {
-                list.add(Integer.parseInt(str));
-            } else if (Integer.parseInt(str) - list.get(list.size() - 1) == 1) {
-                list.add(Integer.parseInt(str));
-            } else {
-                return Collections.emptyList();
+        int zero = sourceString.indexOf("0");
+
+        int firstNum = Integer.parseInt(sourceString.substring(0, zero - 1));
+        sourceString = sourceString.replaceAll(String.valueOf(firstNum), "");
+        if (Integer.parseInt(sourceString) > firstNum) {
+            list.add(firstNum);
+            int len = String.valueOf(list.get(0)).length() + 1;
+            for (int i = 0; i < sourceString.length(); i += len) {
+                list.add(Integer.valueOf(sourceString.substring(i, i + len)));
+            }
+            if (hasValidStructure(list)) {
+                return list;
             }
         }
-        return list.isEmpty() ? Collections.emptyList() : list;
+        int len = String.valueOf(firstNum).length();
+
+        if (len % 4 == 0) {
+            list.add(Integer.valueOf(String.valueOf(firstNum).substring(0, 4)));
+            list.add(Integer.valueOf(String.valueOf(firstNum).substring(4)));
+            list.add(Integer.valueOf(sourceString));
+            if (hasValidStructure(list)) {
+                return list;
+            }
+        }
+        return Collections.emptyList();
+    }
+
+    private boolean hasValidStructure(ArrayList<Integer> list) {
+        return list.get(1) - list.get(0) == 1
+                &&
+                list.get(list.size() - 1) - list.get(list.size() - 2) == 1;
     }
 }
