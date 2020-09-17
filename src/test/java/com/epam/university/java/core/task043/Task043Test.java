@@ -61,7 +61,7 @@ public class Task043Test {
         final String decodedText = "TO BE OR NOT TO BE, THAT IS THE QUESTION";
         final String encodedText
                 = "- ---   -... .   --- .-.   -. --- -   - ---   "
-                + "-... . --..--   - .... .- -   .. ...   - .... .   "
+                + "-... . .-.-.-   - .... .- -   .. ...   - .... .   "
                 + "--.- ..- . ... - .. --- -.";
         assertEquals(
                 "Invalid encoding",
