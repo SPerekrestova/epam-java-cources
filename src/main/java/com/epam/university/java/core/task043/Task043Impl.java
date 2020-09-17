@@ -38,7 +38,7 @@ public class Task043Impl implements Task043 {
             'X', "-..-",
             'Y', "-.--",
             'Z', "--..",
-            ',', ".-.-.-"
+            ',', "--..--"
     ));
 
     @Override
