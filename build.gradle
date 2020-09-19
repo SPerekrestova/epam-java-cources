@@ -33,6 +33,7 @@ dependencies {
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
     compile group: 'org.locationtech.jts', name: 'jts-core', version: '1.17.1'
     compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
+    compile 'ch.obermuhlner:big-math:2.3.0'
     compile('javax.xml.bind:jaxb-api:2.3.0')
     compile('javax.activation:activation:1.1')
     compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
