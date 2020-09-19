@@ -1,7 +1,8 @@
 package com.epam.university.java.core.task013;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
 
 public class Task013Impl implements Task013 {
 
@@ -21,82 +22,78 @@ public class Task013Impl implements Task013 {
         if (figure == null) {
             throw new IllegalArgumentException();
         }
-        ArrayList<Vertex> vertices = (ArrayList<Vertex>) figure.getVertexes();
-        ArrayList<Vertex> sortedVerticies = sortVerticies(vertices);
-        boolean gotNegative = false;
-        boolean gotPositive = false;
-        int numPoints = sortedVerticies.size();
-        int b;
-        int c;
-        for (int a = 0; a < numPoints; a++) {
-            b = (a + 1) % numPoints;
-            c = (b + 1) % numPoints;
+        FigureFactory factory = new FigureFactoryImpl();
 
-            int crossProduct =
-                    crossProductLength(
-                            sortedVerticies.get(a)
-                                           .getX(), sortedVerticies.get(a)
-                                                                   .getY(),
-                            sortedVerticies.get(b)
-                                           .getX(), sortedVerticies.get(b)
-                                                                   .getY(),
-                            sortedVerticies.get(c)
-                                           .getX(), sortedVerticies.get(c)
-                                                                   .getY());
-            if (crossProduct < 0) {
-                gotNegative = true;
-            } else if (crossProduct > 0) {
-                gotPositive = true;
-            }
-            if (gotNegative && gotPositive) {
-                return false;
+        int size = figure.getVertexes().size();
+        if (size < 3) {
+            return false;
+        }
+        if (size == 3) {
+            return true;
+        }
+
+        Vertex first;
+        Vertex second;
+        Vertex third;
+
+        List<Vertex> vertexes = (List<Vertex>) figure.getVertexes();
+        Vertex startVertex = vertexes.stream()
+                .min(Comparator.comparing(Vertex::getX))
+                .get();
+
+        vertexes.sort(new SortVertexes(startVertex.getX(), startVertex.getY()));
+
+        int crossProduct = 0;
+        for (int i = 0; i < size; i++) {
+            first = vertexes.get(i);
+            second = vertexes.get((i + 1) % size);
+            third = vertexes.get((i + 2) % size);
+
+            Vertex firstVector = factory
+                    .newInstance(second.getX() - first.getX(), second.getY() - first.getY());
+            Vertex secondVector = factory
+                    .newInstance(third.getX() - second.getX(), third.getY() - second.getY());
+
+            if (i == 0) {
+                crossProduct = vectorProduct(firstVector, secondVector);
+            } else {
+                int currentCrossProduct = vectorProduct(firstVector, secondVector);
+                if (currentCrossProduct * crossProduct < 0) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    private int crossProductLength(int ax, int ay, int bx, int by, int cx, int cy) {
-        int aBx = bx - ax;
-        int aBy = by - ay;
-        int aCx = cx - ax;
-        int aCy = cy - ay;
-        return aBx * aCy - aBy * aCx;
+    public static int vectorProduct(Vertex firstVector, Vertex secondVector) {
+        return firstVector.getX() * secondVector.getY() - secondVector.getX() * firstVector.getY();
     }
 
-    /**
-     * Find center vertex.
-     * @param vertices list of vertexes
-     * @return center vertex
-     */
-    public VertexImpl findCentroid(ArrayList<Vertex> vertices) {
-        int x = 0;
-        int y = 0;
-        for (Vertex p : vertices) {
-            x += p.getX();
-            y += p.getY();
+    static class SortVertexes implements Comparator<Vertex> {
+        private final int startX;
+        private final int startY;
+
+        public SortVertexes(int startX, int startY) {
+            this.startX = startX;
+            this.startY = startY;
         }
-        VertexImpl center = new VertexImpl(0, 0);
-        center.setX(x / vertices.size());
-        center.setX(y / vertices.size());
-        return center;
-    }
 
-    /**
-     * Sort vertices clockwise.
-     * @param vertices list of vertices
-     * @return sorted list of vertices
-     */
-    public ArrayList<Vertex> sortVerticies(ArrayList<Vertex> vertices) {
-        VertexImpl center = findCentroid(vertices);
-        vertices.sort((a, b) -> {
-            double a1 =
-                    (Math.toDegrees(Math.atan2(a.getX() - center.getX(), a.getY() - center.getY()))
-                            + 360) % 360;
-            double a2 =
-                    (Math.toDegrees(Math.atan2(b.getX() - center.getX(), b.getY() - center.getY()))
-                            + 360) % 360;
-            return (int) (a1 - a2);
-        });
-        return vertices;
+        @Override
+        public int compare(Vertex o1, Vertex o2) {
+            if (o1.getX() - startX == 0 && o1.getY() - startY == 0) {
+                return -1;
+            }
+            if (o2.getX() - startX == 0 && o2.getY() - startY == 0) {
+                return 1;
+            }
+            double tg1 = (double) (o1.getY() - startY) / (double) (o1.getX() - startX);
+            double tg2 = (double) (o2.getY() - startY) / (double) (o2.getX() - startX);
+            if (tg1 > tg2) {
+                return 1;
+            } else {
+                return -1;
+            }
+        }
     }
 }
