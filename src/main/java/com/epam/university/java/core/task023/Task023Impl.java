@@ -7,6 +7,6 @@ public class Task023Impl implements Task023 {
         if (phoneString == null || phoneString.length() < 10) {
             throw new IllegalArgumentException();
         }
-        return phoneString.replaceAll("[+(|)/\\s]", "").substring(1,4);
+        return phoneString.replaceAll("[+(|\\-)/\\s]", "").substring(1,4);
     }
 }
