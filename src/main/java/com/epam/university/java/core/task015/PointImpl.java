@@ -47,6 +47,6 @@ public class PointImpl implements Point {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getX(), getY());
+        return (int) (Objects.hash(getX()) + Objects.hash(getY()) + Math.random());
     }
 }
