@@ -38,10 +38,6 @@ dependencies {
     compile('javax.activation:activation:1.1')
     compile('org.glassfish.jaxb:jaxb-runtime:2.3.0')
     compile 'org.apache.commons:commons-lang3:3.11'
-
-    compile group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
-    compile group: 'org.glassfish.jaxb', name: 'jaxb-runtime', version: '2.3.3'
-
     testCompile group: 'org.mockito', name: 'mockito-all', version: '2.0.2-beta'
     testCompile group: 'junit', name: 'junit', version: '4.12'
     implementation 'org.apache.commons:commons-math3:3.6.1'
