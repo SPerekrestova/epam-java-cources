@@ -25,7 +25,8 @@ public class Task029Impl implements Task029 {
         return rowsList;
     }
 
-    private ArrayList<String> fillVertical(ArrayList<String> r, ArrayList<String> w, int wordNum, int rowNum) {
+    private ArrayList<String> fillVertical(ArrayList<String> r,
+                                           ArrayList<String> w, int wordNum, int rowNum) {
         String word = w.get(wordNum);
         int count = 0;
         int charPos = r.get(rowNum).indexOf("-");
@@ -39,16 +40,19 @@ public class Task029Impl implements Task029 {
             if (r.get(i).charAt(charPos) == '-') {
                 r.set(i, r.get(i).replaceFirst("-", String.valueOf(word.charAt(count))));
                 count++;
-            }
-            else if (r.get(i).charAt(charPos) == word.charAt(0)) {
-                r.set(i, r.get(i).replaceFirst(String.valueOf(word.charAt(0)), String.valueOf(word.charAt(count))));
+            } else if (r.get(i).charAt(charPos) == word.charAt(0)) {
+                r.set(i, r.get(i).replaceFirst(
+                        String.valueOf(word.charAt(0)),
+                        String.valueOf(word.charAt(count))
+                ));
                 count++;
             }
         }
         return r;
     }
 
-    private ArrayList<String> fillHorizontal(ArrayList<String> r, ArrayList<String> w, int wordNum, int rowNum) {
+    private ArrayList<String> fillHorizontal(ArrayList<String> r,
+                                             ArrayList<String> w, int wordNum, int rowNum) {
         String word = w.get(wordNum);
         String row = r.get(rowNum);
         int count = 0;
