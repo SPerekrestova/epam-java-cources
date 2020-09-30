@@ -34,8 +34,8 @@ public class EntityImpl implements Entity {
             return false;
         }
         EntityImpl entity = (EntityImpl) o;
-        return getId() == entity.getId() &&
-                Objects.equals(getValue(), entity.getValue());
+        return getId() == entity.getId()
+                && Objects.equals(getValue(), entity.getValue());
     }
 
     @Override

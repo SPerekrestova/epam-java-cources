@@ -3,7 +3,7 @@ package com.epam.university.java.core.task041;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Task041Impl implements Task041{
+public class Task041Impl implements Task041 {
     @Override
     public Entity create(Collection<Entity> collection, String value) {
         if (collection == null || value == null) {
