@@ -1,31 +1,16 @@
 package com.epam.university.java.project.core.cdi.bean;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlRootElement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@XmlRootElement(name = "bean")
 public class BeanDefinitionImpl implements BeanDefinition {
 
-    @XmlAttribute(name = "id")
     private String id;
-
-    @XmlAttribute(name = "class")
     private String className;
-
-    @XmlElements({@XmlElement(type = BeanPropertyDefinitionImpl.class, name = "property")})
     private List<BeanPropertyDefinition> properties;
-
-    @XmlAttribute(name = "init")
     private String postConstruct;
-
-    @XmlAttribute(name = "scope")
     private String scope;
-
 
     @Override
     public String getId() {
