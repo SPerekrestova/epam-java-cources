@@ -26,19 +26,64 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     @Override
     public int loadBeanDefinitions(Resource resource) {
-        BeanDefinitionImpl bean;
-        List<BeanPropertyDefinition> properties;
-
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        prepareXmlDoc(factory, resource);
+        return 0;
+    }
+
+
+    @Override
+    public int loadBeanDefinitions(Collection<Resource> resources) {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        for (Resource res : resources) {
+            prepareXmlDoc(factory, res);
+        }
+        return 0;
+    }
+
+    // If scope=singleton, we should create new instance outside this method and
+    // return a link to this method
+    // Create new instance of a class, fill in setters
+    // returned complete instance
+    @Override
+    public <T> T getBean(Class<T> beanClass) {
+        //        if (cache.containsKey(beanClass)) {
+        //            return (T) cache.get(beanClass);
+        //        }
+        //        Class<? extends T> implClass = beanClass;
+        //        if (beanClass.isInterface()) {
+        //            implClass = resource.getImplClass(beanClass);
+        //        }
+        return null;
+    }
+
+    @Override
+    public Object getBean(String beanName) {
+        return null;
+    }
+
+    @Override
+    public <T> T getBean(String beanName, Class<T> beanClass) {
+        return null;
+    }
+
+    private void prepareXmlDoc(DocumentBuilderFactory factory, Resource res) {
         DocumentBuilder builder;
         Document document = null;
         try {
-            File xmlFile = new File(String.valueOf(resource.getFile()));
+            File xmlFile = new File(String.valueOf(res.getFile()));
             builder = factory.newDocumentBuilder();
             document = builder.parse(xmlFile);
         } catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
         }
+        assert document != null;
+        scanXmlDoc(document);
+    }
+
+    private void scanXmlDoc(Document document) {
+        List<BeanPropertyDefinition> properties;
+        BeanDefinitionImpl bean;
         assert document != null;
         document.getDocumentElement().normalize();
         NodeList nList = document.getElementsByTagName("bean");
@@ -51,66 +96,38 @@ public class ApplicationContextImpl implements ApplicationContext {
                 bean.setClassName(eElement.getAttribute("class"));
                 bean.setPostConstruct(eElement.getAttribute("init"));
                 bean.setScope(eElement.getAttribute("scope"));
-                properties = new ArrayList<>();
-                NodeList propList = eElement.getElementsByTagName("property");
-                for (int k = 0; k < propList.getLength(); k++) {
-                    NamedNodeMap prop = eElement.getElementsByTagName("property").item(k).getAttributes();
-                    BeanPropertyDefinitionImpl beanProperty = new BeanPropertyDefinitionImpl();
-                    for (int i = 0; i < prop.getLength(); i++) {
-                        String name = prop.item(i).getNodeName();
-                        switch (name) {
-                            case "name":
-                                beanProperty.setName(prop.item(i).getNodeValue());
-                                break;
-                            case "value":
-                                beanProperty.setValue(prop.item(i).getNodeValue());
-                                break;
-                            case "ref":
-                                beanProperty.setRef(prop.item(i).getNodeValue());
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                    properties.add(beanProperty);
-                }
+                properties = getBeanPropertyDefinitions(eElement);
                 bean.setProperties(properties);
                 beanDefinitionRegistry.addBeanDefinition(bean);
             }
         }
-        return 0;
     }
 
-    @Override
-    public int loadBeanDefinitions(Collection<Resource> resources) {
-        return 0;
-    }
-
-    // If scope=singleton, we should create new instance outside this method and
-    // return a link to this method
-    // Create new instance of a class, fill in setters
-    // returned complete instance
-    @Override
-    public <T> T getBean(Class<T> beanClass) {
-//        if (cache.containsKey(beanClass)) {
-//            return (T) cache.get(beanClass);
-//        }
-//        Class<? extends T> implClass = beanClass;
-//        if (beanClass.isInterface()) {
-//            implClass = resource.getImplClass(beanClass);
-//        }
-
-
-        return null;
-    }
-
-    @Override
-    public Object getBean(String beanName) {
-        return null;
-    }
-
-    @Override
-    public <T> T getBean(String beanName, Class<T> beanClass) {
-        return null;
+    private List<BeanPropertyDefinition> getBeanPropertyDefinitions(Element eElement) {
+        List<BeanPropertyDefinition> properties;
+        properties = new ArrayList<>();
+        NodeList propList = eElement.getElementsByTagName("property");
+        for (int k = 0; k < propList.getLength(); k++) {
+            NamedNodeMap prop = eElement.getElementsByTagName("property").item(k).getAttributes();
+            BeanPropertyDefinitionImpl beanProperty = new BeanPropertyDefinitionImpl();
+            for (int i = 0; i < prop.getLength(); i++) {
+                String name = prop.item(i).getNodeName();
+                switch (name) {
+                    case "name":
+                        beanProperty.setName(prop.item(i).getNodeValue());
+                        break;
+                    case "value":
+                        beanProperty.setValue(prop.item(i).getNodeValue());
+                        break;
+                    case "ref":
+                        beanProperty.setRef(prop.item(i).getNodeValue());
+                        break;
+                    default:
+                        break;
+                }
+            }
+            properties.add(beanProperty);
+        }
+        return properties;
     }
 }

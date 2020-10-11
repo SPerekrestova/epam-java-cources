@@ -6,7 +6,7 @@ public class BeanPropertyDefinitionImpl implements BeanPropertyDefinition {
     private String name;
     private String value;
     private String ref;
-//    private StructureDefinition data;
+    //    private StructureDefinition data;
 
     @Override
     public String getName() {
