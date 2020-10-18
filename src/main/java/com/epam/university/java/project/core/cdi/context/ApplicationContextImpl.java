@@ -52,8 +52,10 @@ public class ApplicationContextImpl implements ApplicationContext {
 
     @Override
     public <T> T getBean(Class<T> beanClass) {
-        Class<?> clazz = beanClass;
-        String className = clazz.getName().toLowerCase().replaceAll("\\w+\\.", "");
+        if (beanClass.isInterface()) {
+            beanClass = (Class<T>) getImpl(beanClass);
+        }
+        String className = beanClass.getName().toLowerCase().replaceAll("\\w+\\.", "");
         return getBean(className, beanClass);
     }
 
@@ -61,16 +63,21 @@ public class ApplicationContextImpl implements ApplicationContext {
     public Object getBean(String beanName) {
         Class<?> clazz = null;
         try {            
-            clazz = Class.forName(beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase()).getClassName());
+            clazz = Class.forName(
+                    beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                          .getClassName()
+            );
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            throw new RuntimeException();
         }
-        assert clazz != null;
         return getBean(beanName, clazz);
     }
 
     @Override
     public <T> T getBean(String beanName, Class<T> beanClass) {
+        if (beanClass.isInterface()) {
+            beanClass = (Class<T>) getImpl(beanClass);
+        }
         String scope = beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase()).getScope();
         T t = null;
 
@@ -80,10 +87,12 @@ public class ApplicationContextImpl implements ApplicationContext {
 
         try {
             t = beanClass.getDeclaredConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException
+                | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException();
         }
-        if (beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase()).getProperties() == null) {
+        if (beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                  .getProperties() == null) {
             singletonCache.put(beanClass, t);
             return t;
         }
@@ -94,6 +103,9 @@ public class ApplicationContextImpl implements ApplicationContext {
         for (Field field : t.getClass().getDeclaredFields()) {
             field.setAccessible(true);
             for (BeanPropertyDefinition prop : properties) {
+                if (prop.getValue() == null && prop.getData() == null && prop.getRef() == null) {
+                    throw new RuntimeException();
+                }
                 if (field.getName().equals(prop.getName())) {
                     try {
                         Class<?> type = field.getType();
@@ -107,7 +119,7 @@ public class ApplicationContextImpl implements ApplicationContext {
                             field.set(t, dependency);
                         }
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                        throw new RuntimeException();
                     }
                 }
             }
@@ -117,5 +129,25 @@ public class ApplicationContextImpl implements ApplicationContext {
         }
 
         return t;
+    }
+
+    private <T> T getImpl(Class<T> beanClass) {
+        List<BeanDefinition> list = beanDefinitionRegistry.getAllBeanDefinitions();
+        Class<?> clazz = null;
+        for (BeanDefinition bean : list) {
+            try {
+                clazz = Class.forName(bean.getClassName());
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException();
+            }
+            if (clazz.getInterfaces().length != 0) {
+                String interfaces = clazz.getInterfaces()[0].getSimpleName();
+                if  (beanClass.getSimpleName()
+                                      .equals(interfaces)) {
+                    break;
+                }
+            }
+        }
+        return (T) clazz;
     }
 }

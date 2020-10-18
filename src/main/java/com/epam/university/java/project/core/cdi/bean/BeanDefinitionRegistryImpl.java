@@ -1,5 +1,7 @@
 package com.epam.university.java.project.core.cdi.bean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,5 +20,9 @@ public class BeanDefinitionRegistryImpl implements BeanDefinitionRegistry {
     @Override
     public BeanDefinition getBeanDefinition(String beanId) {
         return beanCache.get(beanId);
+    }
+
+    public List<BeanDefinition> getAllBeanDefinitions() {
+        return new ArrayList<>(beanCache.values());
     }
 }
