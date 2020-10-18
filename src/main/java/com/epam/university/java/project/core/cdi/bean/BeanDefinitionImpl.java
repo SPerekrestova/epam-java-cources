@@ -1,13 +1,13 @@
 package com.epam.university.java.project.core.cdi.bean;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 @XmlRootElement(name = "bean")
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -55,7 +55,7 @@ public class BeanDefinitionImpl implements BeanDefinition {
 
     @Override
     public void setProperties(Collection<BeanPropertyDefinition> properties) {
-        this.properties = new ArrayList<>(properties);
+        this.properties = new LinkedList<>(properties);
     }
 
     @Override

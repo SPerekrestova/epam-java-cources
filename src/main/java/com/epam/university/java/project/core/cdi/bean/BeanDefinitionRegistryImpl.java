@@ -12,7 +12,7 @@ public class BeanDefinitionRegistryImpl implements BeanDefinitionRegistry {
 
     @Override
     public void addBeanDefinition(BeanDefinition definition) {
-        beanCache.put(definition.getId(), definition);
+        beanCache.put(definition.getId().toLowerCase(), definition);
     }
 
     @Override
