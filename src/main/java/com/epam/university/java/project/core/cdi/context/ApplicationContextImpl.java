@@ -139,7 +139,8 @@ public class ApplicationContextImpl implements ApplicationContext {
                                         && entryDefinition.getRef() == null) {
                                     throw new RuntimeException();
                                 }
-                                if (field.getName().equals("stringMap") && entryDefinition.getRef() != null) {
+                                if (field.getName().equals("stringMap")
+                                        && entryDefinition.getRef() != null) {
                                     throw new RuntimeException();
                                 }
                                 if (entryDefinition.getValue() != null) {
