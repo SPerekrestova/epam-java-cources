@@ -5,17 +5,20 @@ import com.epam.university.java.project.core.cdi.bean.BeanDefinitionRegistryImpl
 import com.epam.university.java.project.core.cdi.bean.BeanPropertyDefinition;
 import com.epam.university.java.project.core.cdi.bean.BeanRoot;
 import com.epam.university.java.project.core.cdi.io.Resource;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import com.epam.university.java.project.core.cdi.structure.ListDefinitionImpl;
+import com.epam.university.java.project.core.cdi.structure.MapDefinition;
+import com.epam.university.java.project.core.cdi.structure.MapDefinitionImpl;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 public class ApplicationContextImpl implements ApplicationContext {
 
@@ -55,14 +58,16 @@ public class ApplicationContextImpl implements ApplicationContext {
         if (beanClass.isInterface()) {
             beanClass = (Class<T>) getImpl(beanClass);
         }
-        String className = beanClass.getName().toLowerCase().replaceAll("\\w+\\.", "");
+        String className = beanClass.getName()
+                                    .toLowerCase()
+                                    .replaceAll("\\w+\\.", "");
         return getBean(className, beanClass);
     }
 
     @Override
     public Object getBean(String beanName) {
         Class<?> clazz = null;
-        try {            
+        try {
             clazz = Class.forName(
                     beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
                                           .getClassName()
@@ -78,7 +83,8 @@ public class ApplicationContextImpl implements ApplicationContext {
         if (beanClass.isInterface()) {
             beanClass = (Class<T>) getImpl(beanClass);
         }
-        String scope = beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase()).getScope();
+        String scope = beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                             .getScope();
         T t = null;
 
         if (scope != null && scope.equals("singleton") && singletonCache.containsKey(beanClass)) {
@@ -86,7 +92,8 @@ public class ApplicationContextImpl implements ApplicationContext {
         }
 
         try {
-            t = beanClass.getDeclaredConstructor().newInstance();
+            t = beanClass.getDeclaredConstructor()
+                         .newInstance();
         } catch (InstantiationException | IllegalAccessException
                 | InvocationTargetException | NoSuchMethodException e) {
             throw new RuntimeException();
@@ -97,25 +104,56 @@ public class ApplicationContextImpl implements ApplicationContext {
             return t;
         }
         List<BeanPropertyDefinition> properties = new LinkedList<>(
-                beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase()).getProperties()
+                beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                      .getProperties()
         );
 
-        for (Field field : t.getClass().getDeclaredFields()) {
+        for (Field field : t.getClass()
+                            .getDeclaredFields()) {
             field.setAccessible(true);
             for (BeanPropertyDefinition prop : properties) {
-                if (prop.getValue() == null && prop.getData() == null && prop.getRef() == null) {
+                if (prop.getValue() == null && prop.getRef() == null && prop.getData() == null) {
                     throw new RuntimeException();
                 }
-                if (field.getName().equals(prop.getName())) {
+                if (field.getName()
+                         .equals(prop.getName())) {
                     try {
                         Class<?> type = field.getType();
-                        String typeName = type.getName().toUpperCase().replaceAll("\\w+\\.", "");
+                        String typeName = type.getName()
+                                              .toUpperCase()
+                                              .replaceAll("\\w+\\.", "");
                         if (typeName.equals("INT")) {
                             field.set(t, Integer.parseInt(prop.getValue()));
                         } else if (typeName.equals("STRING")) {
                             field.set(t, prop.getValue());
+                        } else if (prop.getData() instanceof ListDefinitionImpl
+                                && typeName.equals("COLLECTION")) {
+                            field.set(t, ((ListDefinitionImpl) prop.getData()).getItems());
+                        } else if (prop.getData() instanceof MapDefinitionImpl
+                                && typeName.equals("MAP")) {
+                            MapDefinition mapDefinition = (MapDefinition) prop.getData();
+                            Map<String, Object> itemMap = new HashMap<>();
+                            for (MapDefinition.MapEntryDefinition entryDefinition
+                                    : mapDefinition.getValues()) {
+                                if (entryDefinition.getValue() == null
+                                        && entryDefinition.getRef() == null) {
+                                    throw new RuntimeException();
+                                }
+                                if (field.getName().equals("stringMap") && entryDefinition.getRef() != null) {
+                                    throw new RuntimeException();
+                                }
+                                if (entryDefinition.getValue() != null) {
+                                    itemMap.put(entryDefinition.getKey(),
+                                            entryDefinition.getValue());
+                                } else if (entryDefinition.getRef() != null) {
+                                    Object dependency = getBean(entryDefinition.getRef());
+                                    itemMap.put(entryDefinition.getKey(), dependency);
+                                }
+                            }
+                            field.set(t, itemMap);
                         } else {
-                            Object dependency = getBean(prop.getRef().toLowerCase());
+                            Object dependency = getBean(prop.getRef()
+                                                            .toLowerCase());
                             field.set(t, dependency);
                         }
                     } catch (IllegalAccessException e) {
@@ -142,8 +180,8 @@ public class ApplicationContextImpl implements ApplicationContext {
             }
             if (clazz.getInterfaces().length != 0) {
                 String interfaces = clazz.getInterfaces()[0].getSimpleName();
-                if  (beanClass.getSimpleName()
-                                      .equals(interfaces)) {
+                if (beanClass.getSimpleName()
+                             .equals(interfaces)) {
                     break;
                 }
             }

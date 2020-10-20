@@ -61,7 +61,7 @@ public class BeanPropertyDefinitionImpl implements BeanPropertyDefinition {
 
     @Override
     public StructureDefinition getData() {
-        return null;
+        return data;
     }
 
     @Override
