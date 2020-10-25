@@ -83,11 +83,17 @@ public class ApplicationContextImpl implements ApplicationContext {
         if (beanClass.isInterface()) {
             beanClass = (Class<T>) getImpl(beanClass);
         }
-        String scope = beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
-                                             .getScope();
+        String scope = null;
+        if (beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                  .getScope() == null) {
+            scope = "prototype";
+        } else {
+            scope = beanDefinitionRegistry.getBeanDefinition(beanName.toLowerCase())
+                                          .getScope();
+        }
         T t = null;
 
-        if (scope != null && scope.equals("singleton") && singletonCache.containsKey(beanClass)) {
+        if (scope.equals("singleton") && singletonCache.containsKey(beanClass)) {
             return (T) singletonCache.get(beanClass);
         }
 
@@ -139,7 +145,8 @@ public class ApplicationContextImpl implements ApplicationContext {
                                         && entryDefinition.getRef() == null) {
                                     throw new RuntimeException();
                                 }
-                                if (field.getName().equals("stringMap")
+                                if (field.getName()
+                                         .equals("stringMap")
                                         && entryDefinition.getRef() != null) {
                                     throw new RuntimeException();
                                 }
@@ -174,16 +181,22 @@ public class ApplicationContextImpl implements ApplicationContext {
         List<BeanDefinition> list = beanDefinitionRegistry.getAllBeanDefinitions();
         Class<?> clazz = null;
         for (BeanDefinition bean : list) {
-            try {
-                clazz = Class.forName(bean.getClassName());
-            } catch (ClassNotFoundException e) {
-                throw new RuntimeException();
-            }
-            if (clazz.getInterfaces().length != 0) {
-                String interfaces = clazz.getInterfaces()[0].getSimpleName();
-                if (beanClass.getSimpleName()
-                             .equals(interfaces)) {
-                    break;
+            if (bean.getId().toLowerCase().equals(beanClass.getSimpleName().toLowerCase())) {
+                try {
+                    clazz = Class.forName(bean.getClassName());
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException();
+                }
+                if (clazz.getInterfaces().length != 0) {
+                    String interfaces = clazz.getInterfaces()[0].getSimpleName();
+                    if (beanClass.getSimpleName()
+                                 .equals(interfaces)) {
+                        bean.setId(clazz.getName()
+                                        .toLowerCase()
+                                        .replaceAll("\\w+\\.", ""));
+                        beanDefinitionRegistry.addBeanDefinition(bean);
+                        break;
+                    }
                 }
             }
         }
