@@ -3,6 +3,7 @@ package com.epam.university.java.project.domain;
 import com.epam.university.java.project.core.state.machine.domain.StateMachineDefinition;
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Random;
 
 public class BookImpl implements Book {
 
@@ -13,6 +14,11 @@ public class BookImpl implements Book {
     private LocalDate date;
     private BookStatus bookStatus;
     private StateMachineDefinition<BookStatus, BookEvent> definition;
+
+    public BookImpl() {
+        Random random = new Random();
+        this.id = random.nextInt(1000) + random.nextInt(1000);
+    }
 
     @Override
     public int getId() {

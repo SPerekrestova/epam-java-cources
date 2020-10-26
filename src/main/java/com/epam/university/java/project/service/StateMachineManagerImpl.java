@@ -1,9 +1,11 @@
-package com.epam.university.java.project.core.state.machine.manager;
+package com.epam.university.java.project.service;
 
 import com.epam.university.java.project.core.cdi.io.Resource;
 import com.epam.university.java.project.core.state.machine.domain.StateMachineDefinition;
+import com.epam.university.java.project.core.state.machine.domain.StateMachineDefinitionBuilderImpl;
 import com.epam.university.java.project.core.state.machine.domain.StateMachineDefinitionImpl;
 import com.epam.university.java.project.core.state.machine.domain.StatefulEntity;
+import com.epam.university.java.project.core.state.machine.manager.StateMachineManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
@@ -27,6 +29,9 @@ public class StateMachineManagerImpl implements StateMachineManager {
     @Override
     public <S, E> StatefulEntity<S, E> initStateMachine(StatefulEntity<S, E> entity,
                                                         StateMachineDefinition<S, E> definition) {
+
+        StateMachineDefinitionBuilderImpl builder = new StateMachineDefinitionBuilderImpl();
+
         return null;
     }
 

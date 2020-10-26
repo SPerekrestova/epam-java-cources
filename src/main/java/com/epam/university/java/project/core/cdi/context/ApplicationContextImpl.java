@@ -20,10 +20,11 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+@SuppressWarnings("unchecked")
 public class ApplicationContextImpl implements ApplicationContext {
 
     BeanDefinitionRegistryImpl beanDefinitionRegistry = new BeanDefinitionRegistryImpl();
-    private Map<Class, Object> singletonCache = new ConcurrentHashMap<>();
+    private final Map<Class, Object> singletonCache = new ConcurrentHashMap<>();
 
     @Override
     public int loadBeanDefinitions(Resource resource) {
@@ -53,6 +54,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         return numOfBeans;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(Class<T> beanClass) {
         if (beanClass.isInterface()) {
@@ -78,6 +80,7 @@ public class ApplicationContextImpl implements ApplicationContext {
         return getBean(beanName, clazz);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <T> T getBean(String beanName, Class<T> beanClass) {
         if (beanClass.isInterface()) {
@@ -170,7 +173,7 @@ public class ApplicationContextImpl implements ApplicationContext {
                 }
             }
         }
-        if (scope != null && scope.equals("singleton") && !singletonCache.containsKey(beanClass)) {
+        if (scope.equals("singleton") && !singletonCache.containsKey(beanClass)) {
             singletonCache.put(beanClass, t);
         }
 
