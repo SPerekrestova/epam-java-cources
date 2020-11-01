@@ -30,8 +30,8 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book createBook() {
         Book book = bookDao.createBook();
-        stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
-                BookEvent.CREATE);
+//        stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
+//                BookEvent.CREATE);
         book.setState(BookStatus.DRAFT);
         return book;
     }

@@ -37,9 +37,9 @@ public class StateMachineManagerImpl implements StateMachineManager {
 
     @Override
     public <S, E> StatefulEntity<S, E> handleEvent(StatefulEntity<S, E> entity, E event) {
-        StateMachineDefinitionImpl stateMachineDefinition = new StateMachineDefinitionImpl();
+        StateMachineDefinitionImpl stateMachineDefinition = (StateMachineDefinitionImpl) entity.getStateMachineDefinition();
         for (StateMachineState state : stateMachineDefinition.getStates()) {
-            if (state.getOn().equals(entity.getState())) {
+            if (state.getOn().equals(event) && state.getFrom().equals(entity.getState())) {
 
             }
         }
