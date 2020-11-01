@@ -12,24 +12,27 @@ import java.util.Collection;
 
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
-    private final Resource stateMachineDefinitionXml;
     private StateMachineManager stateMachineManager;
+    private Resource stateMachineDefinitionXml;
     private StateMachineDefinition<BookStatus, BookEvent> definition;
 
+    /**
+     * Public default constructor for initializing stateMachine.
+     */
     @SuppressWarnings("unchecked")
-    public BookServiceImpl(
-            StateMachineManager stateMachineManager) {
+    public BookServiceImpl() {
         final String contextPath = getClass()
                 .getResource("/project/DefaultBookStateMachineDefinition.xml")
                 .getFile();
         stateMachineDefinitionXml = new XmlResource(contextPath);
-        definition = (StateMachineDefinition<BookStatus, BookEvent>) stateMachineManager
-                .loadDefinition(stateMachineDefinitionXml);
         bookDao = new BookDaoXmlImpl();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Book createBook() {
+        definition = (StateMachineDefinition<BookStatus, BookEvent>) stateMachineManager
+                .loadDefinition(stateMachineDefinitionXml);
         Book book = bookDao.createBook();
         stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
                 BookEvent.CREATE);
@@ -58,19 +61,21 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book accept(Book book, String number) {
-        stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
-                BookEvent.ACCEPT);
-
-        return null;
+        book.setSerialNumber(number);
+        stateMachineManager.handleEvent(book, BookEvent.ACCEPT);
+        return book;
     }
 
     @Override
     public Book issue(Book book, LocalDate returnDate) {
-        return null;
+        book.setReturnDate(returnDate);
+        stateMachineManager.handleEvent(book, BookEvent.ISSUE);
+        return book;
     }
 
     @Override
     public Book returnFromIssue(Book book) {
-        return null;
+        stateMachineManager.handleEvent(book, BookEvent.RETURN);
+        return book;
     }
 }
