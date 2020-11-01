@@ -12,17 +12,16 @@ import java.util.Collection;
 
 public class BookServiceImpl implements BookService {
     private final BookDao bookDao;
-    private final Resource stateMachineDefinitionXml;
-    private StateMachineManager stateMachineManager;
-    private StateMachineDefinition<BookStatus, BookEvent> definition;
+    private final StateMachineManager stateMachineManager;
+    private final StateMachineDefinition<BookStatus, BookEvent> definition;
 
     @SuppressWarnings("unchecked")
-    public BookServiceImpl(
-            StateMachineManager stateMachineManager) {
+    public BookServiceImpl() {
         final String contextPath = getClass()
                 .getResource("/project/DefaultBookStateMachineDefinition.xml")
                 .getFile();
-        stateMachineDefinitionXml = new XmlResource(contextPath);
+        Resource stateMachineDefinitionXml = new XmlResource(contextPath);
+        stateMachineManager = new StateMachineManagerImpl();
         definition = (StateMachineDefinition<BookStatus, BookEvent>) stateMachineManager
                 .loadDefinition(stateMachineDefinitionXml);
         bookDao = new BookDaoXmlImpl();
@@ -33,6 +32,7 @@ public class BookServiceImpl implements BookService {
         Book book = bookDao.createBook();
         stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
                 BookEvent.CREATE);
+        book.setState(BookStatus.DRAFT);
         return book;
     }
 
@@ -60,17 +60,24 @@ public class BookServiceImpl implements BookService {
     public Book accept(Book book, String number) {
         stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
                 BookEvent.ACCEPT);
-
-        return null;
+        book.setState(BookStatus.ACCOUNTED);
+        return book;
     }
 
     @Override
     public Book issue(Book book, LocalDate returnDate) {
-        return null;
+        stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
+                BookEvent.ISSUE);
+        book.setReturnDate(returnDate);
+        book.setState(BookStatus.ISSUED);
+        return book;
     }
 
     @Override
     public Book returnFromIssue(Book book) {
-        return null;
+        stateMachineManager.handleEvent(stateMachineManager.initStateMachine(book, definition),
+                BookEvent.RETURN);
+        book.setState(BookStatus.ACCOUNTED);
+        return book;
     }
 }
