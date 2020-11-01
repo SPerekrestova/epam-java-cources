@@ -8,6 +8,10 @@ import com.epam.university.java.project.core.cdi.io.Resource;
 import com.epam.university.java.project.core.cdi.structure.ListDefinitionImpl;
 import com.epam.university.java.project.core.cdi.structure.MapDefinition;
 import com.epam.university.java.project.core.cdi.structure.MapDefinitionImpl;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -16,9 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 @SuppressWarnings("unchecked")
 public class ApplicationContextImpl implements ApplicationContext {
@@ -180,9 +181,20 @@ public class ApplicationContextImpl implements ApplicationContext {
         return t;
     }
 
+
     private <T> T getImpl(Class<T> beanClass) {
         List<BeanDefinition> list = beanDefinitionRegistry.getAllBeanDefinitions();
         Class<?> clazz = null;
+        String beanName = beanClass.getName().toLowerCase();
+        if (beanName.contains("interface")) {
+            int pos = beanName.lastIndexOf('i');
+            String name = beanClass.getName().substring(0, pos);
+            try {
+                clazz = Class.forName(name);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         for (BeanDefinition bean : list) {
             if (bean.getId().toLowerCase().equals(beanClass.getSimpleName().toLowerCase())) {
                 try {
