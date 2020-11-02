@@ -57,13 +57,8 @@ public class Task021Impl implements Task021 {
                         p, q, r, pointA.getY(), pointB.getY(), pointC.getY()
                 )
         );
-
-        if (coordY.signum() < 0 && coordY.scale() == 16) {
-            coordY = BigDecimal.valueOf(-0.42264973081037427);
-        } else if (coordY.scale() == 16) {
-            coordY = coordY
-                    .setScale(15, RoundingMode.HALF_UP);
-        }
+        coordY = coordY
+                .setScale(15, RoundingMode.HALF_UP);
 
         return new PointImpl(coordX, coordY.doubleValue());
     }
