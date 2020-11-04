@@ -1,8 +1,9 @@
 package com.epam.university.java.core.task045;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Task045Impl implements Task045 {
     @Override
@@ -10,33 +11,63 @@ public class Task045Impl implements Task045 {
         if (input == null) {
             throw new IllegalArgumentException();
         }
-        StringBuilder sb = new StringBuilder();
-        List<String> inputList = new ArrayList<>(Arrays.asList(input.split(" ")));
-        if (!inputList.isEmpty()) {
-            for (String str : inputList) {
-                if (reverse(str, sb)) {
-                    return input;
-                }
-                sb.append(" ");
-            }
-        } else {
-            if (reverse(input, sb)) {
-                return input;
-            }
+        if (input.length() == 1) {
+            return input;
         }
+        if (input.isBlank()) {
+            return input;
+        }
+        if (input.matches("[^a-zA-Z]+")) {
+            return input;
+        }
+        StringBuilder sb;
+        if (input.split("\\s").length > 1) {
+            sb = processMulti(input);
+        } else {
+            sb = processSingle(input);
+        }
+
         return sb.toString().trim();
     }
 
-    private boolean reverse(String input, StringBuilder sb) {
+    private StringBuilder processMulti(String input) {
+        StringBuilder sb = new StringBuilder();
+        for (String s : input.split(" ")) {
+            sb.append(processSingle(s));
+            sb.append(" ");
+        }
+        return sb;
+    }
+
+    private StringBuilder processSingle(String input) {
+        StringBuilder sb = new StringBuilder();
         char[] arr = input.toCharArray();
-        for (int i = arr.length - 1; i > -1; i--) {
-            if (Character.isLetter(arr[i])) {
-                sb.append(arr[i]);
+        ArrayList<Character> charList = new ArrayList<>();
+        List<Character> arrList = new LinkedList<>();
+        convertToLists(arr, charList, arrList);
+        int count = arrList.size() - 1;
+
+        for (int i = 0; i < charList.size(); i++) {
+            if (Character.isLetter(charList.get(i))) {
+                charList.set(i, arrList.get(count));
+                count--;
             }
         }
-        if (sb.length() == 0) {
-            return true;
-        }
-        return false;
+        String result = charList.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+        sb.append(result);
+        return sb;
     }
+
+    private void convertToLists(char[] arr, ArrayList<Character> charList,
+                                List<Character> arrList) {
+        for (char c : arr) {
+            if (Character.isLetter(c)) {
+                arrList.add(c);
+            }
+            charList.add(c);
+        }
+    }
+
 }
