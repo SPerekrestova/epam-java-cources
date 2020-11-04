@@ -6,8 +6,11 @@ import java.util.List;
 public class Task046Impl implements Task046 {
     @Override
     public List<String> assembleMatryoshka(Integer k, Integer n) {
+        if (k == null || n == null) {
+            throw new IllegalArgumentException();
+        }
         List<int[]> combinations = new ArrayList<>();
-        helper(combinations, new int[k], 0, n-1, 0);
+        helper(combinations, new int[k], 0, n - 1, 0);
         List<String> resultList = new ArrayList<>();
         StringBuilder sb;
         for (int[] buf : combinations) {
@@ -19,7 +22,8 @@ public class Task046Impl implements Task046 {
         }
         return resultList;
     }
-    private void helper(List<int[]> combinations, int data[], int start,
+
+    private void helper(List<int[]> combinations, int[] data, int start,
                         int end, int index) {
         if (index == data.length) {
             int[] combination = data.clone();
