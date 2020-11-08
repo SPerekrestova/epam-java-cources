@@ -20,6 +20,9 @@ public class Task038Impl implements Task038 {
 
     @Override
     public Collection<Vertex> getShortestPath(Graph graph, int startId, int endId) {
+        if (graph == null) {
+            throw new IllegalArgumentException();
+        }
         GraphImpl myGraph = (GraphImpl) graph;
         Map<Integer, List<Integer>> adjacencyList = myGraph.getAdjacencyList();
 

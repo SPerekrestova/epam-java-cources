@@ -25,6 +25,9 @@ public class GraphImpl implements Graph {
 
     @Override
     public void createVertex(int id, int x, int y) {
+        if (vertexList.size() == vertexCount) {
+            throw new IllegalArgumentException();
+        }
         vertexList.add(new VertexImpl(id, x, y));
         adjacencyList.put(id, new ArrayList<>());
     }
