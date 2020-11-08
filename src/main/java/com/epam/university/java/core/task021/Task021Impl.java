@@ -51,7 +51,11 @@ public class Task021Impl implements Task021 {
         double q = b * secant2;
         double r = c * secant3;
 
-        double coordX = getCoordinate(p, q, r, pointA.getX(), pointB.getX(), pointC.getX());
+        BigDecimal coordX = BigDecimal.valueOf(
+                getCoordinate(
+                        p, q, r, pointA.getX(), pointB.getX(), pointC.getX()
+                )
+        );
         BigDecimal coordY = BigDecimal.valueOf(
                 getCoordinate(
                         p, q, r, pointA.getY(), pointB.getY(), pointC.getY()
@@ -59,8 +63,10 @@ public class Task021Impl implements Task021 {
         );
         coordY = coordY
                 .setScale(15, RoundingMode.HALF_UP);
+        coordX = coordX
+                .setScale(15, RoundingMode.HALF_UP);
 
-        return new PointImpl(coordX, coordY.doubleValue());
+        return new PointImpl(coordX.doubleValue(), coordY.doubleValue());
     }
 
     private double getCoordinate(double p, double q, double r, double x, double x2, double x3) {
