@@ -19,8 +19,8 @@ public class Task049Impl implements Task049 {
     private StringBuilder findCommon(String str, char[] arr) {
         StringBuilder result = new StringBuilder();
         boolean isFirst = true;
-        for (int i = 0; i < arr.length; i++) {
-            String buf = String.valueOf(arr[i]);
+        for (char c : arr) {
+            String buf = String.valueOf(c);
             if (isFirst && str.contains(buf)) {
                 result.append(buf);
                 isFirst = false;
