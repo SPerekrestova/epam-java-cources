@@ -83,8 +83,13 @@ public class Task039Impl implements Task039 {
             sumNode.setFrequency(x.getFrequency() + y.getFrequency());
             sumNode.setLetter('-');
             if (x.getFrequency() == y.getFrequency() && priorityQueue.size() != 1) {
-                sumNode.setRight(x);
-                sumNode.setLeft(y);
+                if (Character.compare(x.getLetter(), y.getLetter()) > 1) {
+                    sumNode.setRight(x);
+                    sumNode.setLeft(y);
+                } else {
+                    sumNode.setRight(y);
+                    sumNode.setLeft(x);
+                }
             } else {
                 sumNode.setRight(y);
                 sumNode.setLeft(x);

@@ -42,6 +42,10 @@ public class Node implements Comparable<Node> {
 
     @Override
     public int compareTo(Node o) {
-        return frequency - o.frequency;
+        if (frequency == o.frequency) {
+            return Character.compare(letter, o.letter);
+        } else {
+            return frequency - o.frequency;
+        }
     }
 }
