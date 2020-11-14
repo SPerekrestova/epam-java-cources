@@ -1,29 +1,51 @@
 package com.epam.university.java.core.task055;
 
 import java.util.Objects;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "passports_houses")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class HouseDefinitionImpl implements HouseDefinition {
 
+    @XmlElement(name = "address")
     private String address;
+
+    @XmlElement(name = "data_buildingdate")
     private int year;
+
+    @XmlElement(name = "data_buildingarea")
     private double area;
 
-    //addr_district ??
+    @XmlElement(name = "addr_district")
+    private String district;
 
-    //address
+    @XmlElement(name = "comm_type")
+    private String communalFlats;
+
     @Override
     public String getAddress() {
         return address;
     }
-    //data_buildingdate
+
     @Override
     public int getYear() {
         return year;
     }
-    //data_buildingarea
+
     @Override
     public double getArea() {
         return area;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public String getCommunalFlats() {
+        return communalFlats;
     }
 
     @Override
@@ -39,6 +61,14 @@ public class HouseDefinitionImpl implements HouseDefinition {
     @Override
     public void setArea(double area) {
         this.area = area;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public void setCommunalFlats(String communalFlats) {
+        this.communalFlats = communalFlats;
     }
 
     @Override
