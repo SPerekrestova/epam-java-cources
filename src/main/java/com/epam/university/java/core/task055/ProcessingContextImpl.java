@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class ProcessingContextImpl implements ProcessingContext {
 
-    private Collection<HouseDefinition> houseDefinitions;
+    private final Collection<HouseDefinition> houseDefinitions;
 
     public ProcessingContextImpl(Collection<HouseDefinition> houseDefinitions) {
         this.houseDefinitions =  houseDefinitions;
@@ -36,7 +36,8 @@ public class ProcessingContextImpl implements ProcessingContext {
         int count = 0;
         int currentAge = 2020;
         for (HouseDefinition house : houseDefinitions) {
-            if (district.equals(((HouseDefinitionImpl) house).getDistrict()) || district.equals("Город")) {
+            if (district.equals(((HouseDefinitionImpl) house).getDistrict())
+                    || district.equals("Город")) {
                 Pattern pattern = Pattern.compile("\\d{4}");
                 Matcher matcher = pattern.matcher(String.valueOf(house.getYear()));
                 while (matcher.find()) {
