@@ -19,6 +19,9 @@ public class DefaultFileVisitorImpl extends DefaultFileVisitor {
         return foundFiles;
     }
 
+    /**
+       Default constructor.
+     */
     public void setPartOfContent(String partOfContent) {
         this.partOfContent = partOfContent;
         this.partOfContentCheck = true;
