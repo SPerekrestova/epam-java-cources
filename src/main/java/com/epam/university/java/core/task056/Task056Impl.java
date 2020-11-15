@@ -41,13 +41,13 @@ public class Task056Impl implements Task056 {
 
     @Override
     public Collection<String> intervalBetweenMedication(Collection<Integer> necessaryMedication) {
-        /*if (necessaryMedication == null) {
+        if (necessaryMedication == null) {
             throw new IllegalArgumentException();
         }
         if (necessaryMedication.size() == 1) {
             return Collections.emptyList();
         }
-        List<Integer> medication = (List<Integer>) necessaryMedication;
+        /*List<Integer> medication = (List<Integer>) necessaryMedication;
         List<String> resultList = new LinkedList<>();
         for (int i = 1; i < necessaryMedication.size(); i++) {
             int first = prescriptionListOriginal.get(medication.get(i)).getValue().left

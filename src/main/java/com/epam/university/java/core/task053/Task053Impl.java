@@ -84,6 +84,9 @@ public class Task053Impl implements Task053 {
                         out.append(' ');
                         out.append(stack.pop());
                     }
+                    if (stack.isEmpty()) {
+                        throw new IllegalArgumentException();
+                    }
                     stack.pop();
                     break;
                 default:
