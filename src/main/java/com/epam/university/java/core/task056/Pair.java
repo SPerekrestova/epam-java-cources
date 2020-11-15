@@ -1,14 +1,13 @@
 package com.epam.university.java.core.task056;
 
-import java.util.List;
 import java.util.Objects;
 
-public class Pair {
+public class Pair implements Comparable<Pair>  {
 
     private final Integer key;
-    private final List<Integer> value;
+    private final IntPair value;
 
-    public Pair(Integer key, List<Integer> value) {
+    public Pair(Integer key, IntPair value) {
         this.key = key;
         this.value = value;
     }
@@ -17,7 +16,7 @@ public class Pair {
         return key;
     }
 
-    public List<Integer> getValue() {
+    public IntPair getValue() {
         return value;
     }
 
@@ -37,5 +36,10 @@ public class Pair {
     @Override
     public int hashCode() {
         return Objects.hash(key, value);
+    }
+
+    @Override
+    public int compareTo(Pair o) {
+        return (Integer.compare(this.value.getLeft(), o.value.getLeft()));
     }
 }
