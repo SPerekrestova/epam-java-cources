@@ -59,7 +59,6 @@ public class NodeImpl implements Node {
         }
         NodeImpl node = (NodeImpl) o;
         return getKey() == node.getKey()
-//                && Objects.equals(getValue(), node.getValue())
                 && Objects.equals(getPrev(), node.getPrev())
                 && Objects.equals(getNext(), node.getNext());
     }
