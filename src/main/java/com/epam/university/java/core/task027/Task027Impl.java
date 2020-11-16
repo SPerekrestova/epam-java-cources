@@ -39,10 +39,10 @@ public class Task027Impl implements Task027 {
 
         int zero = sourceString.indexOf("0");
 
-        int firstNum = Integer.parseInt(sourceString.substring(0, zero - 1));
+        long firstNum = Long.parseLong(sourceString.substring(0, zero - 1));
         sourceString = sourceString.replaceAll(String.valueOf(firstNum), "");
-        if (Integer.parseInt(sourceString) > firstNum) {
-            list.add(firstNum);
+        if (Long.parseLong(sourceString) > firstNum) {
+            list.add((int) firstNum);
             int len = String.valueOf(list.get(0)).length() + 1;
             for (int i = 0; i < sourceString.length(); i += len) {
                 list.add(Integer.valueOf(sourceString.substring(i, i + len)));
@@ -61,6 +61,16 @@ public class Task027Impl implements Task027 {
                 return list;
             }
         }
+
+        if (len % 5 == 0) {
+            list.add(Integer.valueOf(String.valueOf(firstNum).substring(0, 5)));
+            list.add(Integer.valueOf(String.valueOf(firstNum).substring(5)));
+            list.add(Integer.valueOf(sourceString));
+            if (hasValidStructure(list)) {
+                return list;
+            }
+        }
+
         return Collections.emptyList();
     }
 
