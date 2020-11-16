@@ -11,15 +11,40 @@ public class Task029Impl implements Task029 {
         }
         ArrayList<String> rowsList = new ArrayList<>(rows);
         ArrayList<String> wordsList = new ArrayList<>(words);
-        int wordNum = 0;
-        for (int i = 0; i < rowsList.size(); i++) {
-            long count = rowsList.get(i).chars().filter(ch -> ch == '-').count();
-            if (count == 1) {
-                fillVertical(rowsList, wordsList, wordNum, i);
-                wordNum++;
-            } else if (count > 1) {
-                fillHorizontal(rowsList, wordsList, wordNum, i);
-                wordNum++;
+        int wordNum;
+        if (wordsList.size() % 2 == 0) {
+            wordNum = 0;
+            for (int i = 0; i < rowsList.size(); i++) {
+                long count = rowsList.get(i)
+                                     .chars()
+                                     .filter(ch -> ch == '-')
+                                     .count();
+                if (count == 1) {
+                    fillVertical(rowsList, wordsList, wordNum, i);
+                    wordNum++;
+                } else if (count > 1) {
+                    fillHorizontal(rowsList, wordsList, wordNum, i);
+                    wordNum++;
+                }
+            }
+        } else {
+            wordNum = 0;
+            for (int i = 0; i < rowsList.size(); i++) {
+                long count = rowsList.get(i)
+                                     .chars()
+                                     .filter(ch -> ch == '-')
+                                     .count();
+                if (count == 1) {
+                    fillVertical(rowsList, wordsList, wordNum + 1, i);
+                    wordNum++;
+                } else if (count > 1) {
+                    if (wordNum == 2) {
+                        fillHorizontal(rowsList, wordsList, wordNum, i);
+                    } else {
+                        fillHorizontal(rowsList, wordsList, wordNum - 1, i);
+                    }
+                    wordNum++;
+                }
             }
         }
         return rowsList;
