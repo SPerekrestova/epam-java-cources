@@ -9,7 +9,8 @@ public class ClientImpl implements Client {
 
     private Socket clientSocket;
     private PrintWriter out;
-    private int port;
+    private final int port;
+    boolean isNull;
 
     public ClientImpl(int port) {
         this.port = port;
@@ -18,8 +19,7 @@ public class ClientImpl implements Client {
     @Override
     public void sendMessage(String message) {
         if (message == null) {
-            stop();
-            throw new IllegalArgumentException();
+            isNull = true;
         }
         try {
             out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -44,11 +44,14 @@ public class ClientImpl implements Client {
     @Override
     public void stop() {
         try {
-            if (out != null) {
-                out.close();
-            }
             clientSocket.close();
-        } catch (IOException e) {
+            out.close();
+            if (isNull) {
+                throw new IllegalArgumentException();
+            }
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
