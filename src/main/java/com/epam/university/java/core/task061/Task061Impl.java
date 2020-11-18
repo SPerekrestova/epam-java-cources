@@ -30,6 +30,9 @@ public class Task061Impl implements Task061 {
 
     @Override
     public int convertToArabic(String number) {
+        if (number == null) {
+            throw new IllegalArgumentException();
+        }
         String romanNumeral = number.toUpperCase();
         int result = 0;
 
