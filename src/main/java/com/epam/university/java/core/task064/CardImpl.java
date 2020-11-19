@@ -36,8 +36,8 @@ public class CardImpl implements Card {
             return false;
         }
         CardImpl card = (CardImpl) o;
-        return rank == card.rank &&
-                suit == card.suit;
+        return rank == card.rank
+                && suit == card.suit;
     }
 
     @Override

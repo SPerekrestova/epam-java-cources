@@ -37,8 +37,8 @@ public class PlayerImpl implements Player {
             return false;
         }
         PlayerImpl player = (PlayerImpl) o;
-        return id == player.id &&
-                Objects.equals(hand, player.hand);
+        return id == player.id
+                && Objects.equals(hand, player.hand);
     }
 
     @Override
